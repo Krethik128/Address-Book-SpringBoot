@@ -1,7 +1,7 @@
 package com.gevernova.addressbook.service;
 
 import com.gevernova.addressbook.entity.Address;
-import com.gevernova.addressbook.entity.AddressNotFoundException;
+import com.gevernova.addressbook.exceptionhandler.AddressNotFoundException;
 import com.gevernova.addressbook.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
