@@ -1,4 +1,4 @@
-package com.gevernova.addressbook.entity;
+package com.gevernova.addressbook.exceptionhandler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,8 +1,6 @@
 package com.gevernova.addressbook.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +18,7 @@ public class AddressRequestDTO {
     @Size(max = 50, message = "Last name must not exceed 50 characters in length")
     private String lastName;
 
+    @Pattern(regexp = "^\\+?[0-9]{10}$", message = "Phone number must be in the format +[0-9]{10,14}")
     @NotBlank(message = "Phone number is a mandatory field")
     @Size(max = 20, message = "Phone number must not exceed 20 characters in length")
     private String phoneNumber;

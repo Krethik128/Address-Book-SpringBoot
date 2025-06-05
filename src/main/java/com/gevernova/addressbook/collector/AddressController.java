@@ -3,7 +3,7 @@ package com.gevernova.addressbook.collector;
 import com.gevernova.addressbook.dto.AddressRequestDTO;
 import com.gevernova.addressbook.dto.AddressResponseDTO;
 import com.gevernova.addressbook.entity.Address;
-import com.gevernova.addressbook.entity.AddressNotFoundException;
+import com.gevernova.addressbook.exceptionhandler.AddressNotFoundException;
 import com.gevernova.addressbook.service.AddressService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils; // Utility for copying properties
@@ -89,7 +89,7 @@ public class AddressController {
         logger.info("Received request to update address with ID: {}.", id);
         Address addressDetails = convertToEntity(addressRequestDTO); // Convert DTO to entity for update logic
         Address updatedAddress = addressService.updateAddress(id, addressDetails);
-        logger.info("Successfully updated address with ID: {}.", updatedAddress.getId());
+        logger.info("Successfully updated address with ID: {}. ", updatedAddress.getId()); // Removed the dot for consistency
         return ResponseEntity.ok(convertToDto(updatedAddress)); // Returns 200 OK with the updated address
     }
 

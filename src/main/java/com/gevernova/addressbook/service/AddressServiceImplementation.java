@@ -13,13 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
-public class AddressServiceImpl implements AddressService {
+public class AddressServiceImplementation implements AddressService {
 
     private final AddressRepository addressRepository;
-    private static final Logger logger = LoggerFactory.getLogger(AddressServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AddressServiceImplementation.class);
 
     @Autowired
-    public AddressServiceImpl(AddressRepository addressRepository) {
+    public AddressServiceImplementation(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
     }
 

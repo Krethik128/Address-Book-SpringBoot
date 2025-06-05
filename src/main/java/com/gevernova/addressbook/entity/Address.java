@@ -4,17 +4,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity // Designates this class as a JPA entity
-@Data // Lombok annotation for automatic generation of getters, setters, toString, equals, and hashCode methods
-@NoArgsConstructor // Lombok annotation for the generation of a no-argument constructor
-@AllArgsConstructor // Lombok annotation for the generation of an all-argument constructor
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Address {
 
     @Id // Identifies this field as the primary key
