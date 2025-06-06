@@ -1,13 +1,14 @@
 package com.gevernova.addressbook.dto;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
+@Generated
 public class AddressRequestDTO {
 
     @NotBlank(message = "First name is a mandatory field")

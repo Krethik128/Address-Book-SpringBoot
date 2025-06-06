@@ -1,5 +1,6 @@
 package com.gevernova.addressbook.collector;
 
+import com.gevernova.addressbook.dto.AddressDataDTO;
 import com.gevernova.addressbook.dto.AddressRequestDTO;
 import com.gevernova.addressbook.dto.AddressResponseDTO;
 import com.gevernova.addressbook.entity.Address;
@@ -26,18 +27,22 @@ public class AddressController {
 
     private final AddressService addressService;
 
+
     @Autowired // Injects AddressService dependency
     public AddressController(AddressService addressService) {
         this.addressService = addressService;
     }
 
-    // Helper method to convert Entity to Response DTO
-    private AddressResponseDTO convertToDto(Address address) {
-        logger.debug("Converting Address entity with ID {} to AddressResponseDTO.", address.getId());
-        AddressResponseDTO addressResponseDTO = new AddressResponseDTO();
-        BeanUtils.copyProperties(address, addressResponseDTO); // Copies properties with matching names
-        return addressResponseDTO;
+    private AddressDataDTO convertToDataDto(Address address) {
+        if (address == null) {
+            return null;
+        }
+        logger.debug("Converting Address entity with ID {} to AddressDataDTO.", address.getId());
+        AddressDataDTO addressDataDTO = new AddressDataDTO();
+        BeanUtils.copyProperties(address, addressDataDTO);
+        return addressDataDTO;
     }
+
 
     // Helper method to convert Request DTO to Entity
     private Address convertToEntity(AddressRequestDTO addressRequestDTO) {
@@ -49,14 +54,18 @@ public class AddressController {
 
     // GET all addresses
     @GetMapping // Maps GET requests to /api/addresses
-    public ResponseEntity<List<AddressResponseDTO>> getAllAddresses() {
+    public ResponseEntity<AddressResponseDTO> getAllAddresses() {
         logger.info("Received request to retrieve all addresses.");
         List<Address> addresses = addressService.getAllAddresses();
-        List<AddressResponseDTO> addressResponseDTOs = addresses.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-        logger.info("Successfully retrieved {} addresses.", addressResponseDTOs.size());
-        return ResponseEntity.ok(addressResponseDTOs); // Returns 200 OK with the list of addresses
+        List<AddressDataDTO> addressDataDTOs = addresses.stream()
+                .map(this::convertToDataDto) // Use the new convertToDataDto helper
+                .toList();
+        logger.info("Successfully retrieved {} addresses.", addresses.size());
+        AddressResponseDTO response = AddressResponseDTO.builder()
+                .message("Successfully retrieved all addresses.")
+                .data(addressDataDTOs)
+                .build();
+        return ResponseEntity.ok(response); // Returns 200 OK with the list of addresses
     }
 
     // GET address by ID
@@ -69,7 +78,8 @@ public class AddressController {
                     return new AddressNotFoundException("Address with ID: " + id + " was not found.");
                 });
         logger.info("Successfully retrieved address with ID: {}.", id);
-        return ResponseEntity.ok(convertToDto(address)); // Returns 200 OK with the found address
+        AddressResponseDTO response =new AddressResponseDTO("Successfully retrieved address with ID: "+id,address);
+        return ResponseEntity.ok(response); // Returns 200 OK with the found address
     }
 
     // POST a new address
@@ -80,7 +90,11 @@ public class AddressController {
         Address addressToCreate = convertToEntity(addressRequestDTO);
         Address createdAddress = addressService.createAddress(addressToCreate);
         logger.info("Successfully created address with ID: {}.", createdAddress.getId());
-        return new ResponseEntity<>(convertToDto(createdAddress), HttpStatus.CREATED); // Returns 201 Created with the new address
+        AddressResponseDTO response = AddressResponseDTO.builder()
+                .message("Address created successfully!")
+                .data(convertToDataDto(createdAddress))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED); // Returns 201 Created with the new address
     }
 
     // PUT to update an existing address by ID
@@ -90,15 +104,24 @@ public class AddressController {
         Address addressDetails = convertToEntity(addressRequestDTO); // Convert DTO to entity for update logic
         Address updatedAddress = addressService.updateAddress(id, addressDetails);
         logger.info("Successfully updated address with ID: {}. ", updatedAddress.getId()); // Removed the dot for consistency
-        return ResponseEntity.ok(convertToDto(updatedAddress)); // Returns 200 OK with the updated address
+        AddressResponseDTO response = AddressResponseDTO.builder()
+                .message("Address updated successfully!")
+                .data(convertToDataDto(updatedAddress))
+                .build();
+        return ResponseEntity.ok(response); // Returns 200 OK with the updated address
     }
 
     // DELETE an address by ID
     @DeleteMapping("/{id}") // Maps DELETE requests to /api/addresses/{id}
-    public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<AddressResponseDTO> deleteAddress(@PathVariable Long id) {
         logger.info("Received request to delete address with ID: {}.", id);
         addressService.deleteAddress(id);
         logger.info("Successfully deleted address with ID: {}.", id);
-        return ResponseEntity.noContent().build(); // Returns 204 No Content
+        // Wrap a success message (data can be null or a confirmation string)
+        AddressResponseDTO response = AddressResponseDTO.builder()
+                .message("Address deleted successfully!")
+                .data("Address with ID " + id + " has been removed.")
+                .build();
+        return ResponseEntity.ok(response);// Returns 204 No Content
     }
 }
