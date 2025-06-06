@@ -3,6 +3,7 @@ package com.gevernova.addressbook.service;
 import com.gevernova.addressbook.entity.Address;
 import com.gevernova.addressbook.exceptionhandler.AddressNotFoundException;
 import com.gevernova.addressbook.repository.AddressRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
+@RequiredArgsConstructor
 public class AddressServiceImplementation implements AddressService {
 
     private final AddressRepository addressRepository;
     private static final Logger logger = LoggerFactory.getLogger(AddressServiceImplementation.class);
-
-    @Autowired
-    public AddressServiceImplementation(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
 
     @Override
     public List<Address> getAllAddresses() {

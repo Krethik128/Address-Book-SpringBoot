@@ -7,6 +7,7 @@ import com.gevernova.addressbook.entity.Address;
 import com.gevernova.addressbook.exceptionhandler.AddressNotFoundException;
 import com.gevernova.addressbook.service.AddressService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils; // Utility for copying properties
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,17 +21,12 @@ import org.slf4j.LoggerFactory;
 
 @RestController // Marks this class as a REST controller
 @RequestMapping("/api/addresses") // Base path for all endpoints in this controller
+@RequiredArgsConstructor
 public class AddressController {
 
     private static final Logger logger = LoggerFactory.getLogger(AddressController.class);
 
     private final AddressService addressService;
-
-
-    @Autowired // Injects AddressService dependency
-    public AddressController(AddressService addressService) {
-        this.addressService = addressService;
-    }
 
     private AddressDataDTO convertToDataDto(Address address) {
         if (address == null) {
