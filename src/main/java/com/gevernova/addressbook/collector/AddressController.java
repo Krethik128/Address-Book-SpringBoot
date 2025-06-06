@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +77,10 @@ public class AddressController {
                     return new AddressNotFoundException("Address with ID: " + id + " was not found.");
                 });
         logger.info("Successfully retrieved address with ID: {}.", id);
-        AddressResponseDTO response =new AddressResponseDTO("Successfully retrieved address with ID: "+id,address);
+        AddressResponseDTO response =AddressResponseDTO.builder()
+                .message("Successfully retrieved address.")
+                .data(convertToDataDto(address))
+                .build();
         return ResponseEntity.ok(response); // Returns 200 OK with the found address
     }
 

@@ -26,9 +26,9 @@ public class AddressServiceImplementation implements AddressService {
     @Override
     public List<Address> getAllAddresses() {
         logger.debug("Fetching all addresses from the repository.");
-        List<Address>addresses = addressRepository.findAll();
+        List<Address> addresses = addressRepository.findAll();
         logger.debug("Found {} addresses.", addresses.size());
-        return addressRepository.findAll();
+        return addresses;
     }
 
     @Override
@@ -72,6 +72,7 @@ public class AddressServiceImplementation implements AddressService {
         address.setState(addressDetails.getState());
         address.setZipCode(addressDetails.getZipCode());
         address.setCountry(addressDetails.getCountry());
+        address.setTags(addressDetails.getTags());
 
         Address updatedAddress = addressRepository.save(address);
         logger.info("Address with ID: {} successfully updated.", updatedAddress.getId());

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class AddressResponseDTO {
     private String message;
     Object data;
+    private java.util.List<String> tags;
 }

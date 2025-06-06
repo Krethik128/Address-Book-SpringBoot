@@ -1,10 +1,8 @@
 package com.gevernova.addressbook.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -40,4 +38,9 @@ public class Address {
     private String zipCode;
 
     private String country;
+
+    @ElementCollection
+    @CollectionTable(name = "address_tags",joinColumns=@JoinColumn(name="address_id"))
+    @Column(name = "tag_name")
+    private List<String> tags;
 }
