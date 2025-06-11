@@ -12,23 +12,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "user")
 public class Address {
 
     @Id // Identifies this field as the primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Configures the primary key for auto-incrementation
     private Long id;
 
-    private String firstName;
+    @Column(name = "address_line1")
+    private String street;
 
-    private String lastName;
-
-    private String phoneNumber;
-
-    private String email;
-
-    private String addressLine1;
-
+    @Column(name = "address_line2")
     private String addressLine2;
 
     private String city;
@@ -43,4 +37,8 @@ public class Address {
     @CollectionTable(name = "address_tags",joinColumns=@JoinColumn(name="address_id"))
     @Column(name = "tag_name")
     private List<String> tags;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id" ,nullable = false)
+    private User user;
 }
