@@ -1,5 +1,6 @@
-package com.gevernova.addressbook.collector;
+package com.gevernova.addressbook.controller;
 
+import com.gevernova.addressbook.dto.ResponseDTO;
 import com.gevernova.addressbook.dto.UserRequestDTO;
 import com.gevernova.addressbook.dto.UserResponseDTO;
 import com.gevernova.addressbook.exceptionhandler.UserNotFoundException; // Updated import path
@@ -30,16 +31,19 @@ public class UserController {
 
     // GET all users
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+    public ResponseEntity<ResponseDTO> getAllUsers() {
         logger.info("Received request to retrieve all users.");
         List<UserResponseDTO> userResponseDTOs = userService.getAllUsers();
         logger.info("Successfully retrieved {} users.", userResponseDTOs.size());
-        return ResponseEntity.ok(userResponseDTOs);
+        return new ResponseEntity<>(ResponseDTO.builder()
+                .message("get all addresses")
+                .data(userResponseDTOs)
+                .build(), HttpStatus.OK);
     }
 
     // GET user by ID
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<ResponseDTO> getUserById(@PathVariable Long id) {
         logger.info("Received request to retrieve user with ID: {}", id);
         UserResponseDTO userResponseDTO = userService.getUserById(id)
                 .orElseThrow(() -> {
@@ -47,39 +51,51 @@ public class UserController {
                     return new UserNotFoundException("User with ID: " + id + " was not found.");
                 });
         logger.info("Successfully retrieved user with ID: {}.", id);
-        return ResponseEntity.ok(userResponseDTO);
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message("Fetched user with ID: " + id)
+                .data(userResponseDTO)
+                .build());
     }
 
     // POST a new user
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<ResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
         logger.info("Received request to create a new user: {} {}.",
                 userRequestDTO.getFirstName(), userRequestDTO.getLastName());
         UserResponseDTO createdUser = userService.createUser(userRequestDTO); // Pass DTO directly
         logger.info("Successfully created user with ID: {}.", createdUser.getId());
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        return new ResponseEntity<>(ResponseDTO.builder()
+                .message("Created user for :"+userRequestDTO.getFirstName())
+                .data(createdUser)
+                .build(), HttpStatus.CREATED);
     }
 
     // PUT to update an existing user by ID
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<ResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO userRequestDTO) {
         logger.info("Received request to update user with ID: {}.", id);
         UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO); // Pass DTO directly
         logger.info("Successfully updated user with ID: {}.", updatedUser.getId());
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message("Updated user with ID: " + id)
+                .data(updatedUser)
+                .build());
     }
 
     // DELETE a user by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<ResponseDTO> deleteUser(@PathVariable Long id) {
         logger.info("Received request to delete user with ID: {}.", id);
         userService.deleteUser(id);
         logger.info("Successfully deleted user with ID: {}.", id);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(ResponseDTO.builder()
+                .message("Deleted user with ID: " + id)
+                .data(null)
+                .build(),HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/search-by-address")
-    public ResponseEntity<List<UserResponseDTO>> searchUsersByAddressLocation(
+    public ResponseEntity<ResponseDTO> searchUsersByAddressLocation(
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String state) {
 
@@ -106,6 +122,9 @@ public class UserController {
         }
 
         logger.info("Returning {} users matching address search criteria.", users.size());
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(ResponseDTO.builder()
+                .message("Search users by address")
+                .data(users)
+                .build());
     }
 }
